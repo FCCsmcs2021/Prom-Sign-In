@@ -1,0 +1,54 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+  /**
+   * Run initializations on web app load.
+   */
+  $(function() {
+    // Call the server here to retrieve any information needed to build the page.
+    google.script.run
+       .withSuccessHandler(function(contents) {
+            // Respond to success conditions here.
+            updateDisplay(contents);
+          })
+       .withFailureHandler(function(msg) {
+            // Respond to failure conditions here.
+            $('#main-heading').text(msg);
+            $('#main-heading').addClass("error");
+            $('#error-message').show();
+          })
+       .getStudentInfo();
+       
+  });
+
+  
+  function updateDisplay(contents) {
+    if(contents.children[1]){
+      var headingText = "Displaying data for student "+contents.children[3]+", "+contents.children[5]+":";
+      $('#main-heading').text(headingText);
+      for (var i = 1; i < contents.children.length; i+=2) {
+        var name = contents.children[i];
+        if(i%14==1&&i>1){//Show heading for guest info
+          $('#results').append('<div> <h1>'+ "Displaying data for guest "+contents.children[i+2]+", "+contents.children[i+4]+":"+'</h1> </div>');
+        }
+        if(name != "n/a"&&contents.children[i-1]!="Person who brought the guest's Ticket Number (if applicable):"){//Display student info with bolded subheadings
+          $('#results').append('<div>' + "<b>" + contents.children[i-1] + "</b>" + '</div>');
+          $('#results').append('<div>' + name + '</div>');
+        }
+      }
+      document.getElementById("In/Out").style.display = "";//Show sign in/out buttons
+    }
+    else if(contents.children[0] != " "){
+     $('#main-heading').text("");
+      var name = contents.children[0];
+      name = "<b>"+name+"</b>";
+      $('#results').append('<div class = "error">' + name + '</div>');
+      document.getElementById("In/Out").style.display = "none";
+    }
+    else{
+      $('#main-heading').text("");
+      var headingText = "Welcome to the Poolesville High School Dance!<br>Type in a Student ID number or ticket number,<br>choose the corresponding input option,<br>then click sumbit!<br><br>If the student whose info was entered has a guest,<br>their guest will be signed in with them.<br>";
+      $('#main-heading').append(headingText);
+      document.getElementById("In/Out").style.display = "none";
+    }
+  }
+</script>
