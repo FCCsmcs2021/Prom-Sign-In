@@ -70,7 +70,7 @@ function doGet(e) {
     var resource = {valueInputOption: "USER_ENTERED",data:data};
     Sheets.Spreadsheets.Values.batchUpdate(resource, spreadID);
   }  
-  //Get what row the entered value is in (ID or tickeet num)
+  //Get what row the entered value is in (ID or ticket num)
   if(ss.getRange("Q3").getValue()=="a"){
     for (var i = startRow; i <= endRow; i++) {   
       cellValue = ss.getRange("A"+i).getValue();
